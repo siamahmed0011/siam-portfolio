@@ -33,9 +33,13 @@ export async function createProjectAction(formData: FormData): Promise<ActionRes
   let imagePath: string | null = null;
   if (imageFile && imageFile.size > 0) {
     try {
-      imagePath = await saveUploadedFile(imageFile, { category: "projects" });
+      imagePath = await saveUploadedFile(imageFile, {
+        category: "projects",
+        slug: title,
+      });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Image upload failed";
+      console.error("Project image upload error:", err);
+      const msg = err instanceof Error ? err.message : "Unable to upload project image. Please try again.";
       return { success: false, message: msg };
     }
   }
@@ -58,6 +62,7 @@ export async function createProjectAction(formData: FormData): Promise<ActionRes
 
     return { success: true, message: "Project created successfully", data: project };
   } catch (err: unknown) {
+    console.error("Failed to create project in DB:", err);
     const msg = err instanceof Error ? err.message : "Failed to create project";
     return { success: false, message: msg };
   }
@@ -87,23 +92,24 @@ export async function updateProjectAction(
   }
 
   let imagePath = existing.image;
+  let oldImageToDelete: string | null = null;
 
   if (removeImage) {
-    if (existing.image) {
-      deleteUploadedFile(existing.image);
-    }
+    oldImageToDelete = existing.image;
     imagePath = null;
   }
 
   if (imageFile && imageFile.size > 0) {
     try {
-      const newPath = await saveUploadedFile(imageFile, { category: "projects" });
-      if (existing.image) {
-        deleteUploadedFile(existing.image);
-      }
+      const newPath = await saveUploadedFile(imageFile, {
+        category: "projects",
+        slug: title,
+      });
+      oldImageToDelete = existing.image;
       imagePath = newPath;
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Image upload failed";
+      console.error("Project image update error:", err);
+      const msg = err instanceof Error ? err.message : "Unable to upload project image. Please try again.";
       return { success: false, message: msg };
     }
   }
@@ -121,6 +127,10 @@ export async function updateProjectAction(
       },
     });
 
+    if (oldImageToDelete && oldImageToDelete !== imagePath) {
+      await deleteUploadedFile(oldImageToDelete);
+    }
+
     revalidatePath("/admin/projects");
     revalidatePath(`/admin/projects/${id}/edit`);
     revalidatePath("/projects");
@@ -128,6 +138,7 @@ export async function updateProjectAction(
 
     return { success: true, message: "Project updated successfully", data: updated };
   } catch (err: unknown) {
+    console.error("Failed to update project in DB:", err);
     const msg = err instanceof Error ? err.message : "Failed to update project";
     return { success: false, message: msg };
   }
@@ -141,17 +152,23 @@ export async function deleteProjectAction(id: number): Promise<ActionResult> {
     return { success: false, message: "Project not found" };
   }
 
-  if (existing.image) {
-    deleteUploadedFile(existing.image);
+  try {
+    await prisma.project.delete({ where: { id } });
+
+    if (existing.image) {
+      await deleteUploadedFile(existing.image);
+    }
+
+    revalidatePath("/admin/projects");
+    revalidatePath("/projects");
+    revalidatePath("/");
+
+    return { success: true, message: "Project deleted successfully" };
+  } catch (err: unknown) {
+    console.error("Failed to delete project:", err);
+    const msg = err instanceof Error ? err.message : "Failed to delete project";
+    return { success: false, message: msg };
   }
-
-  await prisma.project.delete({ where: { id } });
-
-  revalidatePath("/admin/projects");
-  revalidatePath("/projects");
-  revalidatePath("/");
-
-  return { success: true, message: "Project deleted successfully" };
 }
 
 /* =========================================================================
@@ -446,9 +463,14 @@ export async function updateSettingsAction(formData: FormData): Promise<ActionRe
     // Handle CV file upload if present
     const cvFile = formData.get("cv_file_upload") as File | null;
     if (cvFile && cvFile.size > 0) {
+      const existingCv = await prisma.setting.findUnique({
+        where: { key: "cv_file" },
+      });
+
       const cvPath = await saveUploadedFile(cvFile, {
         category: "settings",
         allowPdf: true,
+        slug: "cv",
       });
 
       await prisma.setting.upsert({
@@ -456,6 +478,10 @@ export async function updateSettingsAction(formData: FormData): Promise<ActionRe
         create: { key: "cv_file", value: cvPath },
         update: { value: cvPath },
       });
+
+      if (existingCv?.value && existingCv.value !== cvPath) {
+        await deleteUploadedFile(existingCv.value);
+      }
     }
 
     revalidatePath("/admin/settings");

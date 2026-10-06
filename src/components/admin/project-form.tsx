@@ -40,6 +40,12 @@ export function ProjectForm({
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 4.5 * 1024 * 1024) {
+        setErrorMsg("Selected image exceeds the 4.5MB limit. Please select a smaller image.");
+        e.target.value = "";
+        return;
+      }
+      setErrorMsg(null);
       setRemoveImage(false);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -223,7 +229,7 @@ export function ProjectForm({
             className="block w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 file:cursor-pointer cursor-pointer transition-all"
           />
           <p className="text-[11px] text-slate-500 mt-2">
-            Recommended aspect ratio 16:9. Max 10MB. Allowed formats: JPG, PNG, WEBP, GIF, SVG.
+            Recommended aspect ratio 16:9. Max 4.5MB. Allowed formats: JPG, PNG, WEBP, GIF, SVG.
           </p>
         </div>
       </div>

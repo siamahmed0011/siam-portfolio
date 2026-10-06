@@ -368,6 +368,9 @@ export function SettingsForm({ settings, allSettingsList }: SettingsFormProps) {
               accept="application/pdf"
               className="block w-full text-sm text-slate-400 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 file:cursor-pointer cursor-pointer transition-all"
             />
+            <p className={hintCls}>
+              Max 4.5MB. Allowed format: PDF. Stored securely on Vercel Blob storage.
+            </p>
           </div>
         </SectionCard>
 

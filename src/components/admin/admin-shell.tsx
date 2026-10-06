@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -128,16 +128,13 @@ export function AdminShell({ user, children }: AdminShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
-
-  // Read saved preference
-  useEffect(() => {
-    const saved = localStorage.getItem("portfolio_admin_sidebar_collapsed");
-    if (saved !== null) {
-      setSidebarCollapsed(saved === "true");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("portfolio_admin_sidebar_collapsed") === "true";
     }
-  }, []);
+    return false;
+  });
+  const [loggingOut, setLoggingOut] = useState(false);
 
   function toggleSidebar() {
     setSidebarCollapsed((prev) => {

@@ -49,7 +49,7 @@ export function DeleteButton({
   if (showConfirm) {
     return (
       <div className="inline-flex items-center gap-2 p-1.5 bg-rose-950/90 border border-rose-800/80 rounded-xl text-xs animate-in fade-in duration-150 shadow-lg">
-        <span className="text-rose-200 font-semibold px-1.5">Delete?</span>
+        <span className="text-rose-200 font-semibold px-1.5">Delete {itemName}?</span>
         <button
           type="button"
           onClick={handleDelete}

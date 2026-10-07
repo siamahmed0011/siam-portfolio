@@ -19,19 +19,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const settings = await getPortfolioSettings();
 
-  // In Laravel: orderByRaw("CASE WHEN title = 'Food Waste Reduce' THEN 0 ELSE 1 END")->latest()->take(3)
-  const allProjects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
+  const featuredProjects = await prisma.project.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 3,
   });
-
-  // Replicate Laravel custom project priority: "Food Waste Reduce" first
-  const sortedProjects = [...allProjects].sort((a, b) => {
-    if (a.title === "Food Waste Reduce") return -1;
-    if (b.title === "Food Waste Reduce") return 1;
-    return b.createdAt.getTime() - a.createdAt.getTime();
-  });
-
-  const featuredProjects = sortedProjects.slice(0, 3);
 
   return (
     <>

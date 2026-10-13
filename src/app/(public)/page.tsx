@@ -19,18 +19,23 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const settings = await getPortfolioSettings();
 
-  const featuredProjects = await prisma.project.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 3,
-  });
+  let featuredProjects: Awaited<ReturnType<typeof prisma.project.findMany>> = [];
+  try {
+    featuredProjects = await prisma.project.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 3,
+    });
+  } catch (error) {
+    console.warn("Failed to fetch featured projects (using fallback):", error);
+  }
 
   return (
-    <>
+    <div className="home-container">
       {/* Hero Section */}
       <section className="hero">
-        <div className="container hero-grid">
+        <div className="hero-grid">
           <div className="hero-text">
             <p className="eyebrow">
               HI, I&apos;M <TypingEffect rolesString={settings.typing_roles} />
@@ -174,6 +179,6 @@ export default async function HomePage() {
           )}
         </div>
       </section>
-    </>
+    </div>
   );
 }

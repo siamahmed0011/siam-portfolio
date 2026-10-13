@@ -207,9 +207,14 @@ a {
 /* ==========================================================================
    Hero Section
    ========================================================================== */
+.home-container {
+  width: 100%;
+}
+
 .hero {
-  padding: 6rem 0 4rem;
+  padding: 5rem 0 2rem;
   position: relative;
+  min-height: auto;
 }
 
 .hero-grid {
@@ -243,7 +248,7 @@ a {
 }
 
 .hero-subtitle {
-  color: var(--text-secondary);
+  color: #cbd5e1;
   max-width: 560px;
   line-height: 1.75;
   font-size: 1.1rem;
@@ -342,6 +347,10 @@ a {
    ========================================================================== */
 .section {
   padding: 5rem 0;
+}
+
+.featured-projects {
+  padding-top: 2.5rem;
 }
 
 .section-title {
@@ -861,6 +870,15 @@ a.contact-value:hover {
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding-top: 3.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .featured-projects {
+    padding-top: 1.5rem;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 2rem;

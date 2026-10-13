@@ -61,7 +61,7 @@ export async function getPortfolioSettings(): Promise<PortfolioSettings> {
 
     return result;
   } catch (err: unknown) {
-    console.error("Failed to fetch settings from DB, using fallback defaults:", err);
+    console.warn("Failed to fetch settings from DB, using fallback defaults:", err);
     return DEFAULTS;
   }
 }

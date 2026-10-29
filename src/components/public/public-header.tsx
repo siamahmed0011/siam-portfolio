@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -22,6 +22,21 @@ export function PublicHeader({ siteName = "Shiam Ahmed" }: PublicHeaderProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+    return () => {
+      document.body.classList.remove("menu-open");
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <header className="site-header">
       <div className="container header-inner">
@@ -33,18 +48,37 @@ export function PublicHeader({ siteName = "Shiam Ahmed" }: PublicHeaderProps) {
           className="menu-toggle"
           id="menuToggle"
           aria-label="Toggle Menu"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="primaryNavigation"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           <svg viewBox="0 0 24 24" width="24" height="24">
             {mobileMenuOpen ? (
-              <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              <path
+                fill="currentColor"
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
             ) : (
-              <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+              <path
+                fill="currentColor"
+                d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
+              />
             )}
           </svg>
         </button>
 
-        <nav className={`nav-links ${mobileMenuOpen ? "active" : ""}`}>
+        {mobileMenuOpen && (
+          <div
+            className="mobile-backdrop"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
+        <nav
+          id="primaryNavigation"
+          className={`nav-links ${mobileMenuOpen ? "active" : ""}`}
+        >
           {NAV_LINKS.map((link) => {
             const isActive =
               link.href === "/"

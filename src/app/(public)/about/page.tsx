@@ -33,8 +33,9 @@ export default async function AboutPage() {
           <h2 className="section-title">About</h2>
 
           <p className="muted mb-1">
-            {settings.about_intro ||
-              "Flutter Developer with hands-on experience building cross-platform mobile apps using Flutter and Firebase. Skilled in UI design, real-time databases, role-based systems, HTML, CSS, and JavaScript. Also proficient in Canva graphic design, AI video creation, and digital marketing. Seeking an entry-level Flutter Developer or Digital Marketing role to deliver impactful results"}
+            {settings.about_intro
+              ? settings.about_intro.replace(/[`\s]+$/, "")
+              : "Flutter Developer with hands-on experience building cross-platform mobile apps using Flutter and Firebase. Skilled in UI design, real-time databases, role-based systems, HTML, CSS, and JavaScript. Also proficient in Canva graphic design, AI video creation, and digital marketing. Seeking an entry-level Flutter Developer or Digital Marketing role to deliver impactful results"}
           </p>
 
           <div className="about-card">

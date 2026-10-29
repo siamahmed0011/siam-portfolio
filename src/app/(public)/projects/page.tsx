@@ -31,7 +31,7 @@ export default async function ProjectsPage() {
           {projects.length === 0 ? (
             <p className="muted">No projects added yet.</p>
           ) : (
-            projects.map((project) => {
+            projects.map((project, idx) => {
               const techList = project.techStack
                 ? project.techStack
                     .split(",")
@@ -56,6 +56,7 @@ export default async function ProjectsPage() {
                           width={400}
                           height={200}
                           className="project-thumb"
+                          priority={idx === 0}
                           unoptimized
                         />
                       </a>
@@ -66,6 +67,7 @@ export default async function ProjectsPage() {
                         width={400}
                         height={200}
                         className="project-thumb"
+                        priority={idx === 0}
                         unoptimized
                       />
                     )

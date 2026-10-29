@@ -90,7 +90,7 @@ export default async function HomePage() {
           {featuredProjects.length === 0 ? (
             <p className="muted">No projects added yet.</p>
           ) : (
-            featuredProjects.map((project) => {
+            featuredProjects.map((project, idx) => {
               const techList = project.techStack
                 ? project.techStack
                     .split(",")
@@ -115,6 +115,7 @@ export default async function HomePage() {
                           width={400}
                           height={200}
                           className="project-thumb"
+                          priority={idx === 0}
                           unoptimized
                         />
                       </a>
@@ -125,6 +126,7 @@ export default async function HomePage() {
                         width={400}
                         height={200}
                         className="project-thumb"
+                        priority={idx === 0}
                         unoptimized
                       />
                     )

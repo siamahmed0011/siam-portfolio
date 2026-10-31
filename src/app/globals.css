@@ -681,7 +681,7 @@ a {
   font-family: var(--font-title);
   font-weight: 700;
   font-size: 1.05rem;
-  color: var(--color-primary);
+  color: #ffffff;
   margin-bottom: 0.25rem;
 }
 

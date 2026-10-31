@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { getPortfolioSettings } from "@/lib/settings";
-import { getAssetUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -114,36 +113,6 @@ export default async function AboutPage() {
                 })
               )}
             </div>
-          </div>
-
-          <div className="about-card">
-            <h2>Contact Details</h2>
-            {settings.contact_email && (
-              <p>
-                <strong>Email:</strong> {settings.contact_email}
-              </p>
-            )}
-            {settings.location && (
-              <p>
-                <strong>Location:</strong> {settings.location}
-              </p>
-            )}
-            {settings.cv_file && (
-              <p style={{ marginTop: "1rem" }}>
-                <a
-                  href={getAssetUrl(settings.cv_file)}
-                  className="btn btn-primary"
-                  style={{
-                    padding: "0.4rem 1.1rem",
-                    fontSize: "0.85rem",
-                    borderRadius: "8px",
-                  }}
-                  download
-                >
-                  Download Resume (CV)
-                </a>
-              </p>
-            )}
           </div>
         </div>
       </div>

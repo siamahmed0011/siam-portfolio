@@ -21,12 +21,11 @@ const NAV_LINKS = [
 export function PublicHeader({ siteName = "Shiam Ahmed" }: PublicHeaderProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [prevPathname, setPrevPathname] = useState(pathname);
 
-  if (prevPathname !== pathname) {
-    setPrevPathname(pathname);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileMenuOpen(false);
-  }
+  }, [pathname]);
 
   useEffect(() => {
     if (mobileMenuOpen) {

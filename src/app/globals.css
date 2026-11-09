@@ -759,7 +759,7 @@ a {
 }
 
 .contact-value {
-  color: var(--text-primary);
+  color: var(--color-primary);
   word-break: break-word;
   overflow-wrap: anywhere;
 }
